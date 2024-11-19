@@ -22,7 +22,7 @@ export const getContactById = async (req, res) => {
     const contact = await fetchContactById(contactId);
     if (!contact) {
       return res.status(404).json({
-        message: "Contact not found",
+        message: "Contact is not found",
       });
     }
     res.status(200).json({
