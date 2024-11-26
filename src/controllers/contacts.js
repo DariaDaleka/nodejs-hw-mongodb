@@ -24,13 +24,13 @@ export const getAllContacts = async (req, res, next) => {
 export const getContactById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
+
     const contact = await fetchContactById(contactId);
 
     if (!contact) {
-      return res.status(404).json({
-        status: 404,
-        message: "Contact not found.",
-      });
+      const error = new Error("Contact not found");
+      error.status = 404;
+      throw error;
     }
 
     res.status(200).json({

@@ -12,12 +12,16 @@ export const fetchAllContacts = async () => {
 export const fetchContactById = async (contactId) => {
   try {
     const contact = await Contact.findById(contactId);
+
     if (!contact) {
-      throw new Error("Contact not found.");
+      return null;
     }
+
     return contact;
   } catch {
-    throw new Error("Failed to fetch contact by ID.");
+    const dbError = new Error("Failed to fetch contact by ID");
+    dbError.status = 500;
+    throw dbError;
   }
 };
 
