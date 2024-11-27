@@ -1,4 +1,4 @@
-import createError from "http-errors";
+import createHttpError from "http-errors";
 
 import {
   createContact,
@@ -28,14 +28,13 @@ export const getContactById = async (req, res, next) => {
     const contact = await fetchContactById(contactId);
 
     if (!contact) {
-      const error = new Error("Contact not found");
-      error.status = 404;
-      throw error;
+
+      throw createHttpError(404, "Contact not found");
     }
 
-    res.status(200).json({
+    res.json({
       status: 200,
-      message: "Successfully fetched contact!",
+      message: `Successfully found contact with id ${contactId}`,
       data: contact,
     });
   } catch (error) {
@@ -49,13 +48,13 @@ export const createContactController = async (req, res, next) => {
 
 
     if (!name || !phoneNumber || !contactType) {
-      throw createError(400, "Missing required fields: name, phoneNumber, contactType.");
+      throw createHttpError(400, "Missing required fields: name, phoneNumber, contactType.");
     }
 
     const newContact = await createContact({ name, phoneNumber, email, isFavourite, contactType });
 
     if (!newContact) {
-      throw createError(404, "Contact not found");
+      throw createHttpError(404, "Contact not found");
     }
 
     res.status(201).json({
@@ -75,6 +74,10 @@ export const updateContactController = async (req, res, next) => {
 
     const updatedContact = await updateContact(contactId, updateData);
 
+    if (!updatedContact) {
+      throw createHttpError(404, "Contact not found");
+    }
+
     res.status(200).json({
       status: 200,
       message: "Successfully updated contact!",
@@ -88,17 +91,14 @@ export const updateContactController = async (req, res, next) => {
 export const deleteContactController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
+
     const deletedContact = await deleteContact(contactId);
 
     if (!deletedContact) {
-      throw createError(404, "Contact not found");
+      throw createHttpError(404, "Contact not found");
     }
 
-    res.status(200).json({
-      status: 200,
-      message: "Successfully deleted the contact!",
-      data: deletedContact,
-    });
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

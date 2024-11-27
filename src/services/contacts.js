@@ -10,19 +10,7 @@ export const fetchAllContacts = async () => {
 };
 
 export const fetchContactById = async (contactId) => {
-  try {
-    const contact = await Contact.findById(contactId);
-
-    if (!contact) {
-      return null;
-    }
-
-    return contact;
-  } catch {
-    const dbError = new Error("Failed to fetch contact by ID");
-    dbError.status = 500;
-    throw dbError;
-  }
+  return await Contact.findById(contactId);
 };
 
 export const createContact = async (contactData) => {
@@ -36,25 +24,9 @@ export const createContact = async (contactData) => {
 };
 
 export const updateContact = async (contactId, updateData) => {
-  try {
-    const updatedContact = await Contact.findByIdAndUpdate(contactId, updateData, { new: true });
-    if (!updatedContact) {
-      throw new Error("Contact not found.");
-    }
-    return updatedContact;
-  } catch {
-    throw new Error("Failed to update contact.");
-  }
+  return await Contact.findByIdAndUpdate(contactId, updateData, { new: true });
 };
 
 export const deleteContact = async (contactId) => {
-  try {
-    const deletedContact = await Contact.findByIdAndDelete(contactId);
-    if (!deletedContact) {
-      throw new Error("Contact not found.");
-    }
-    return deletedContact;
-  } catch {
-    throw new Error("Failed to delete contact.");
-  }
+  return await Contact.findByIdAndDelete(contactId);
 };
