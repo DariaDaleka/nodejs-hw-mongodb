@@ -1,5 +1,7 @@
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 import createHttpError from "http-errors";
-
 import {
   createContact,
   updateContact,
@@ -8,33 +10,38 @@ import {
   fetchContactById,
 } from "../services/contacts.js";
 
-export const getAllContacts = async (req, res, next) => {
-  try {
-    const contacts = await fetchAllContacts();
-    res.status(200).json({
-      status: 200,
-      message: "Successfully fetched all contacts!",
-      data: contacts,
-    });
-  } catch (error) {
-    next(error);
-  }
+
+export const getAllContacts = async (req, res) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
+  const contacts = await fetchAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+  });
+  res.json({
+    status: 200,
+    message: 'Contacts fetched successfully!',
+    data: contacts,
+  });
 };
+
 
 export const getContactById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-
     const contact = await fetchContactById(contactId);
 
     if (!contact) {
-
       throw createHttpError(404, "Contact not found");
     }
 
     res.json({
       status: 200,
-      message: `Successfully found contact with id ${contactId}`,
+      message: `Contact with ID ${contactId} fetched successfully`,
       data: contact,
     });
   } catch (error) {
@@ -44,22 +51,11 @@ export const getContactById = async (req, res, next) => {
 
 export const createContactController = async (req, res, next) => {
   try {
-    const { name, phoneNumber, email, isFavourite, contactType } = req.body;
-
-
-    if (!name || !phoneNumber || !contactType) {
-      throw createHttpError(400, "Missing required fields: name, phoneNumber, contactType.");
-    }
-
-    const newContact = await createContact({ name, phoneNumber, email, isFavourite, contactType });
-
-    if (!newContact) {
-      throw createHttpError(404, "Contact not found");
-    }
+    const newContact = await createContact(req.body);
 
     res.status(201).json({
       status: 201,
-      message: "Successfully created a contact!",
+      message: "Contact created successfully",
       data: newContact,
     });
   } catch (error) {
@@ -80,7 +76,7 @@ export const updateContactController = async (req, res, next) => {
 
     res.status(200).json({
       status: 200,
-      message: "Successfully updated contact!",
+      message: "Contact updated successfully",
       data: updatedContact,
     });
   } catch (error) {
