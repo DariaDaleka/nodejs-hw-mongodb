@@ -14,16 +14,20 @@ import {
 
 import { validateBody } from "../middlewares/validateBody.js";
 import { isValidId } from "../middlewares/isValidId.js";
+import { authenticate } from '../middlewares/authenticate.js';
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
 
 
 const router = express.Router();
 
+router.use(authenticate);
+
+
 router.get("/", ctrlWrapper(getAllContacts));
 
 router.get("/:contactId", isValidId, ctrlWrapper(getContactById));
 
-router.post("/", validateBody(createContactSchema), ctrlWrapper(createContactController));
+router.post("/register", validateBody(createContactSchema), ctrlWrapper(createContactController));
 
 router.patch("/:contactId", isValidId, validateBody(updateContactSchema), ctrlWrapper(updateContactController));
 
