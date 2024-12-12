@@ -1,6 +1,6 @@
 
 import { model, Schema } from 'mongoose';
-import { ROLES } from '../../constans/constans.js';
+import { ROLES } from '../constants/constants.js';
 
 const usersSchema = new Schema(
   {

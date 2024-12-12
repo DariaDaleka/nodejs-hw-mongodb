@@ -17,7 +17,7 @@ import { isValidId } from "../middlewares/isValidId.js";
 import { authenticate } from '../middlewares/authenticate.js';
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
 import { checkRoles } from '../middlewares/checkRoles.js';
-import { ROLES } from '../constans/constans.js';
+import { ROLES } from '../constants/constants.js';
 
 
 const router = express.Router();
