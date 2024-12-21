@@ -5,7 +5,8 @@ import cookieParser from 'cookie-parser';
 import { PORT } from "./utils/env.js";
 import router from './routers/index.js';
 import  errorHandler  from "./middlewares/errorHandler.js";
-import  notFoundHandler  from "./middlewares/notFoundHandler.js";
+import notFoundHandler from "./middlewares/notFoundHandler.js";
+import { UPLOAD_DIR } from './constants/constants.js';
 
 const logger = pino({
   level: "info",
@@ -26,7 +27,11 @@ export const setupServer = async () => {
 
   app.use(errorHandler);
 
+  app.use('/uploads', express.static(UPLOAD_DIR));
+
   app.listen(PORT, () => {
     logger.info(`Server is running on port ${PORT}`);
   });
+
+
 };

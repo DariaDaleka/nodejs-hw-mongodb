@@ -1,7 +1,6 @@
 
 import { loginUser, registerUser, logoutUser, refreshUsersSession, requestResetToken, resetPassword} from '../services/auth.js';
 import { ONE_DAY } from '../constants/constants.js';
-import {  } from '../services/auth.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
