@@ -27,7 +27,7 @@ router.get("/", authenticate, upload.single('photo'), ctrlWrapper(getAllContacts
 
 router.get("/:contactId", authenticate, upload.single('photo'), isValidId, ctrlWrapper(getContactById));
 
-router.post("/register", authenticate, validateBody(createContactSchema), ctrlWrapper(createContactController));
+router.post("/", authenticate, validateBody(createContactSchema), ctrlWrapper(createContactController));
 
 router.patch("/:contactId", authenticate, isValidId, upload.single('photo'), validateBody(updateContactSchema), ctrlWrapper(updateContactController));
 

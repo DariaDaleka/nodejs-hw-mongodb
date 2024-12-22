@@ -1,9 +1,7 @@
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
-import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
-import { env } from '../utils/env.js';
 import createHttpError from "http-errors";
 import {
   createContact,
@@ -75,16 +73,26 @@ export const createContactController = async (req, res, next) => {
   }
 };
 
-export const updateContactController = async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const updateData = req.body;
-    const userId = req.user._id;
+ export const updateContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const updateData = req.body;
+  const photo = req.file;
 
-    const updatedContact = await updateContact(contactId, updateData, userId);
+  let photoUrl;
+
+  try {
+    if (photo) {
+      photoUrl = await saveFileToCloudinary(photo.path);
+
+    }
+
+    const updatedContact = await updateContact(contactId, {
+      ...updateData,
+      photo: photoUrl,
+    });
 
     if (!updatedContact) {
-      throw createHttpError(404, "Contact not found or access denied");
+      return next(createHttpError(404, "Contact not found or access denied"));
     }
 
     res.status(200).json({
@@ -114,33 +122,4 @@ export const deleteContactController = async (req, res, next) => {
   }
 };
 
-export const patchStudentController = async (req, res, next) => {
-  const { studentId } = req.params;
-  const photo = req.file;
 
-  let photoUrl;
-
-  if (photo) {
-    if (env('ENABLE_CLOUDINARY') === 'true') {
-      photoUrl = await saveFileToCloudinary(photo);
-    } else {
-      photoUrl = await saveFileToUploadDir(photo);
-    }
-  }
-
-  const result = await updateContact(studentId, {
-    ...req.body,
-    photo: photoUrl,
-  });
-
-  if (!result) {
-    next(createHttpError(404, 'Student not found'));
-    return;
-  }
-
-  res.json({
-    status: 200,
-    message: `Successfully patched a student!`,
-    data: result.student,
-  });
-};
