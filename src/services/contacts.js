@@ -39,9 +39,9 @@ export const fetchContactById = async (contactId, userId) => {
   return await Contact.findOne({ _id: contactId, userId });
 };
 
-export const createContact = async (contactData, userId) => {
+export const createContact = async (contactData,) => {
   try {
-    const newContact = new Contact({ ...contactData, userId });
+    const newContact = new Contact({ ...contactData, });
     await newContact.save();
     return newContact;
   } catch (error) {
