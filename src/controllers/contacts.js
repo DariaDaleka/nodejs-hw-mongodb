@@ -60,8 +60,18 @@ export const getContactById = async (req, res, next) => {
 
 export const createContactController = async (req, res, next) => {
   try {
+    console.log("Request body:", req.body);
+    console.log("Uploaded file:", req.file);
+    console.log("Authenticated user ID:", req.user._id);
+
     const userId = req.user._id;
-    const newContact = await createContact(req.body, userId);
+
+    let photoUrl = null;
+    if (req.file) {
+      photoUrl = req.file.path;
+    }
+
+    const newContact = await createContact({ ...req.body, photo: photoUrl, userId });
 
     res.status(201).json({
       status: 201,
@@ -69,11 +79,13 @@ export const createContactController = async (req, res, next) => {
       data: newContact,
     });
   } catch (error) {
+    console.error("Controller error:", error.message, error.stack);
+
     next(error);
   }
 };
 
- export const updateContactController = async (req, res, next) => {
+export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const updateData = req.body;
   const photo = req.file;
@@ -104,6 +116,7 @@ export const createContactController = async (req, res, next) => {
     next(error);
   }
 };
+
 
 export const deleteContactController = async (req, res, next) => {
   try {

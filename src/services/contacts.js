@@ -44,7 +44,8 @@ export const createContact = async (contactData, userId) => {
     const newContact = new Contact({ ...contactData, userId });
     await newContact.save();
     return newContact;
-  } catch {
+  } catch (error) {
+    console.error("Error while creating contact:", error.message);
     throw new Error("Failed to create a new contact.");
   }
 };
