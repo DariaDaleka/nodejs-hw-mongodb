@@ -60,18 +60,20 @@ export const getContactById = async (req, res, next) => {
 
 export const createContactController = async (req, res, next) => {
   try {
-    console.log("Request body:", req.body);
-    console.log("Uploaded file:", req.file);
-    console.log("Authenticated user ID:", req.user._id);
-
     const userId = req.user._id;
 
     let photoUrl = null;
+
+
     if (req.file) {
-      photoUrl = req.file.path;
+      photoUrl = await saveFileToCloudinary(req.file.path);
     }
 
-    const newContact = await createContact({ ...req.body, photo: photoUrl, userId });
+    const newContact = await createContact({
+      ...req.body,
+      photo: photoUrl,
+      userId,
+    });
 
     res.status(201).json({
       status: 201,
@@ -80,7 +82,6 @@ export const createContactController = async (req, res, next) => {
     });
   } catch (error) {
     console.error("Controller error:", error.message, error.stack);
-
     next(error);
   }
 };
@@ -90,18 +91,20 @@ export const updateContactController = async (req, res, next) => {
   const updateData = req.body;
   const photo = req.file;
 
+  const userId = req.user._id;
   let photoUrl;
 
   try {
     if (photo) {
       photoUrl = await saveFileToCloudinary(photo.path);
-
     }
 
-    const updatedContact = await updateContact(contactId, {
-      ...updateData,
-      photo: photoUrl,
-    });
+
+    const updatedContact = await updateContact(
+      contactId,
+      { ...updateData, photo: photoUrl },
+      userId
+    );
 
     if (!updatedContact) {
       return next(createHttpError(404, "Contact not found or access denied"));
@@ -113,6 +116,7 @@ export const updateContactController = async (req, res, next) => {
       data: updatedContact,
     });
   } catch (error) {
+    console.error("Error in updateContactController:", error.message);
     next(error);
   }
 };
