@@ -1,0 +1,126 @@
+tags:
+  - Contacts
+summary: Retrieve all contacts
+operationId: getAllContacts
+description: 'Retrieve a list of all contacts for the authenticated user'
+security:
+  - bearerAuth: []
+parameters:
+  - name: page
+    in: query
+    description: 'The page number for pagination'
+    required: false
+    schema:
+      type: integer
+      example: 1
+  - name: perPage
+    in: query
+    description: 'The number of contacts per page'
+    required: false
+    schema:
+      type: integer
+      example: 10
+  - name: sortBy
+    in: query
+    description: 'Field to sort by (name, email, phoneNumber)'
+    required: false
+    schema:
+      type: string
+      example: 'name'
+  - name: sortOrder
+    in: query
+    description: 'Order to sort by (asc or desc)'
+    required: false
+    schema:
+      type: string
+      example: 'asc'
+  - name: name
+    in: query
+    description: 'Filter by name'
+    required: false
+    schema:
+      type: string
+  - name: phoneNumber
+    in: query
+    description: 'Filter by phone number'
+    required: false
+    schema:
+      type: string
+  - name: email
+    in: query
+    description: 'Filter by email address'
+    required: false
+    schema:
+      type: string
+  - name: contactType
+    in: query
+    description: 'Filter by contact type'
+    required: false
+    schema:
+      type: string
+      enum:
+        - work
+        - home
+        - personal
+  - name: isFavourite
+    in: query
+    description: 'Filter by true or false'
+    required: false
+    schema:
+      type: boolean
+      example: true
+responses:
+  '200':
+    description: 'Successfully found contacts!'
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Successfully found contacts!'
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '../../components/schemas/contact.yaml'
+                  example: []
+                page:
+                  type: integer
+                  example: 2
+                perPage:
+                  type: integer
+                  example: 4
+                totalItems:
+                  type: integer
+                  example: 6
+                totalPages:
+                  type: integer
+                  example: 2
+                hasPreviousPage:
+                  type: boolean
+                  example: true
+                hasNextPage:
+                  type: boolean
+                  example: false
+  '401':
+    $ref: '../../components/responses/401.yaml'
+  '500':
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 500
+            message:
+              type: string
+              example: 'Error retrieving contacts'

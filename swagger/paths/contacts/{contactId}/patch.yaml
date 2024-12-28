@@ -1,0 +1,97 @@
+tags:
+  - Contacts
+summary: Update a contact
+operationId: updateContact
+description: 'Update the details of a specific contact'
+security:
+  - bearerAuth: []
+parameters:
+  - name: contactId
+    in: path
+    required: true
+    description: 'The unique identifier of the contact to update'
+    schema:
+      type: string
+      example: '67698dcab119f87bc7eee931'
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            description: 'The updated name of the contact'
+            example: 'Updated name of the contact'
+          phoneNumber:
+            type: string
+            description: 'The updated phone number of the contact'
+            example: '1256445655'
+          email:
+            type: string
+            format: email
+            description: 'The updated email address of the contact'
+            example: 'messy.updated@gmail.com'
+          isFavourite:
+            type: boolean
+            description: 'Whether the contact is marked as a favourite'
+            example: false
+          contactType:
+            type: string
+            description: 'The updated type of contact'
+            enum:
+              - work
+              - home
+              - personal
+            default: 'personal'
+            example: 'home'
+          photo:
+            type: string
+            description: 'The updated photo URL for the contact'
+            format: binary
+responses:
+  '200':
+    description: Successfully updated the contact
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Contact updated successfully!'
+            data:
+              type: object
+              $ref: ../../../components/schemas/contact.yaml
+  '400':
+    description: Invalid input data
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: 'Invalid data provided for updating the contact'
+  '401':
+    $ref: ../../../components/responses/401.yaml
+  '404':
+    description: Contact not found or doesn't belong to this user
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+  '500':
+    $ref: ../../../components/responses/500.yaml
