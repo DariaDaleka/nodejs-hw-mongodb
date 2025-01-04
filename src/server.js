@@ -1,13 +1,13 @@
 import express from "express";
 import cors from "cors";
 import pino from "pino";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 import { PORT } from "./utils/env.js";
-import router from './routers/index.js';
-import  errorHandler  from "./middlewares/errorHandler.js";
+import router from "./routers/index.js";
+import errorHandler from "./middlewares/errorHandler.js";
 import notFoundHandler from "./middlewares/notFoundHandler.js";
-import { UPLOAD_DIR } from './constants/constants.js';
-import { swaggerDocs } from './middlewares/swaggerDocs.js';
+import { UPLOAD_DIR } from "./constants/constants.js";
+import { swaggerDocs } from "./middlewares/swaggerDocs.js";
 
 const logger = pino({
   level: "info",
@@ -22,18 +22,17 @@ export const setupServer = async () => {
   app.use(express.json());
   app.use(cookieParser());
 
+  swaggerDocs(app);
+
   app.use(router);
 
   app.use(notFoundHandler);
 
   app.use(errorHandler);
 
-  app.use('/uploads', express.static(UPLOAD_DIR));
-  app.use('/api-docs', swaggerDocs());
+  app.use("/uploads", express.static(UPLOAD_DIR));
 
   app.listen(PORT, () => {
     logger.info(`Server is running on port ${PORT}`);
   });
-
-
 };
