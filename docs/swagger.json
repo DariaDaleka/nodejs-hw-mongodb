@@ -59,21 +59,23 @@
             }
           },
           {
-            "name": "name",
+            "name": "sortBy",
             "in": "query",
-            "description": "Filter by name",
+            "description": "Field to sort by (name, email, phoneNumber)",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "name"
             }
           },
           {
-            "name": "phoneNumber",
+            "name": "sortOrder",
             "in": "query",
-            "description": "Filter by phone number",
+            "description": "Order to sort by (asc or desc)",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "asc"
             }
           },
           {
@@ -89,7 +91,18 @@
                 "personal"
               ]
             }
+          },
+          {
+            "name": "isFavourite",
+            "in": "query",
+            "description": "Filter by true or false",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
           }
+
         ],
         "responses": {
           "200": {
