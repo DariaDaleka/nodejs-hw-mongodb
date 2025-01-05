@@ -20,20 +20,6 @@ parameters:
     schema:
       type: integer
       example: 10
-  - name: sortBy
-    in: query
-    description: 'Field to sort by (name, email, phoneNumber)'
-    required: false
-    schema:
-      type: string
-      example: 'name'
-  - name: sortOrder
-    in: query
-    description: 'Order to sort by (asc or desc)'
-    required: false
-    schema:
-      type: string
-      example: 'asc'
   - name: name
     in: query
     description: 'Filter by name'
@@ -43,12 +29,6 @@ parameters:
   - name: phoneNumber
     in: query
     description: 'Filter by phone number'
-    required: false
-    schema:
-      type: string
-  - name: email
-    in: query
-    description: 'Filter by email address'
     required: false
     schema:
       type: string
@@ -62,13 +42,6 @@ parameters:
         - work
         - home
         - personal
-  - name: isFavourite
-    in: query
-    description: 'Filter by true or false'
-    required: false
-    schema:
-      type: boolean
-      example: true
 responses:
   '200':
     description: 'Successfully found contacts!'
